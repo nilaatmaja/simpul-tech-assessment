@@ -1,0 +1,38 @@
+[
+    {
+        "id": "a29b9638-e0de-48c3-be8d-952bc1e646d2",
+        "title": "109220-Naturalization",
+        "isOpen": false,
+        "isMultipleChat": true,
+        "lastUser": "Cameron Philips",
+        "lastMessage": "Please check this out",
+        "date": "2021-01-01T11:10:00.000Z"
+    },
+    {
+        "id": "a29b9638-e0de-48c3-be8d-952bc1e646d3",
+        "title": "Jeannette Moraima Guaman Chamba (Hutto I-589) [ Hutto Follow Up - Brief Service ]",
+        "isOpen": true,
+        "isMultipleChat": true,
+        "lastUser": "Ellen",
+        "lastMessage": "Hey, please read.",
+        "date": "2021-06-02T02:45:00.000Z"
+    },
+    {
+        "id": "a29b9638-e0de-48c3-be8d-952bc1e646d4",
+        "title": "8405-Diana SALAZAR MUNGUIA",
+        "isOpen": true,
+        "isMultipleChat": true,
+        "lastUser": "Cameron Philips",
+        "lastMessage": "I understand your initial concerns and thats very valid, Elizabeth. But you Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae, voluptate.",
+        "date": "2021-06-01T04:19:00.000Z"
+    },
+    {
+        "id": "a29b9638-e0de-48c3-be8d-952bc1e646d5",
+        "title": "FastVisa Support",
+        "isOpen": true,
+        "isMultipleChat": false,
+        "lastUser": null,
+        "lastMessage": "Hey there! Welcome to your inbox.",
+        "date": "2021-06-01T04:19:00.000Z"
+    }
+]
