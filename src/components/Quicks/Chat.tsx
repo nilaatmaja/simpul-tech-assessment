@@ -1,22 +1,73 @@
 import { QuicksChatType } from "@/types/QuicksType";
 import { ArrowLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import BubbleChat from "../BubbleChat/BubbleChat";
+import { useEffect, useRef, useState } from "react";
+import BubbleChat from "./BubbleChat/BubbleChat";
+import { axios } from "@/utils/API/config";
 
 const Chat = (props: QuicksChatType) => {
     const { onBack } = props;
-    const [message, setMessage] = useState("");
+    const contentEditableRef = useRef<HTMLDivElement | null>(null);
+    const bottomOfChatRef = useRef<HTMLDivElement | null>(null);
+    const [inputMessage, setInputMessage] = useState("");
+    const [isFetching, setIsFetching] = useState(false);
+    // NOTE: The following code is intended for demo purposes only.
+    const [messages, setMessages] = useState<
+        { message: string; name: string; self: boolean }[]
+    >([]);
+
+    useEffect(() => {
+        scrollChatToBottom();
+    }, []);
 
     const handleOnChange = (e: React.SyntheticEvent<HTMLElement>) => {
         const content = e.currentTarget.textContent || "";
-        setMessage(content);
+        setInputMessage(content);
     };
 
-    const handleSend = () => {
-        console.log("message :>> ", message);
-        // TODO: Integrate with dummy API
-        // to get random string and show as new message
+    const handleSend = async () => {
+        if (!inputMessage) return;
+        setMessages((prev) => [
+            ...prev,
+            {
+                message: inputMessage,
+                name: "You",
+                self: true,
+            },
+        ]);
+        setInputMessage("");
+        if (contentEditableRef.current) {
+            contentEditableRef.current.innerHTML = "";
+        }
+        setIsFetching(true);
+        try {
+            const response = await axios("/comment", {});
+            const { data } = response.data;
+            const newData = data[Math.floor(Math.random() * data.length)];
+            setMessages((prev) => [
+                ...prev,
+                {
+                    message: newData.message,
+                    name: `${newData.owner.firstName} ${newData.owner.lastName}`,
+                    self: false,
+                },
+            ]);
+        } catch (error) {
+            console.error("Error sending data:", error);
+        }
+        setIsFetching(false);
     };
+
+    const scrollChatToBottom = () => {
+        if (bottomOfChatRef.current) {
+            bottomOfChatRef.current.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+    };
+
+    useEffect(() => {
+        scrollChatToBottom();
+    }, [messages]);
 
     return (
         <>
@@ -81,7 +132,7 @@ const Chat = (props: QuicksChatType) => {
                 <BubbleChat
                     isSelfMessage
                     name="You"
-                    message=" Please contact Mary for questions regarding the
+                    message="Please contact Mary for questions regarding the
                     case bcs she will be managing your forms from
                     now on! Thanks Mary."
                     time="19:32"
@@ -113,6 +164,36 @@ const Chat = (props: QuicksChatType) => {
                     time="19:32"
                     userIndex={1}
                 />
+
+                {/* 
+                    NOTE: The following code is intended for demo purposes only. 
+                    It does not reflect production-ready or optimized code. 
+                    Make sure to replace it with appropriate implementations in a real-world scenario.
+                */}
+                {messages.length
+                    ? messages.map((item, index) => (
+                          <BubbleChat
+                              key={`msg-${index}`}
+                              isSelfMessage={item.self}
+                              name={item.name}
+                              message={item.message}
+                              time={new Date().toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                              })}
+                              userIndex={0}
+                          />
+                      ))
+                    : null}
+
+                {isFetching && (
+                    <div className="typing mt-5">
+                        <span className="dot"></span>
+                        <span className="dot"></span>
+                        <span className="dot"></span>
+                    </div>
+                )}
+                <div ref={bottomOfChatRef} className="invisible" />
             </div>
 
             {/* Input Message */}
@@ -120,11 +201,12 @@ const Chat = (props: QuicksChatType) => {
             <div className="flex items-end p-5 border border-t-[#DBDBDB] gap-3">
                 <div className="flex w-5/6 relative">
                     <div
+                        ref={contentEditableRef}
                         className="w-full leading-10 border border-stone-300 rounded-md p-1 px-2 resize-none whitespace-pre-wrap focus:outline-none"
                         onInput={handleOnChange}
                         contentEditable
                     ></div>
-                    {!message && (
+                    {!inputMessage && (
                         <div className="absolute top-1/2 -translate-y-1/2 left-2 text-sm text-gray-400 pointer-events-none">
                             Type a new message
                         </div>
